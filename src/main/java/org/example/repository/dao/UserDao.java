@@ -1,15 +1,13 @@
 package org.example.repository.dao;
 
 import org.example.config.HibernateConfig;
-import org.example.controller.UserController;
 import org.example.model.User;
 import org.example.repository.UserRepository;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class UserDao implements UserRepository<User> {
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
@@ -27,7 +25,7 @@ public class UserDao implements UserRepository<User> {
         }
         catch (Exception e){
             logger.error("Error creating user to db");
-            return null;
+            throw new HibernateException("Failed creating user", e);
         }
     }
 
@@ -41,7 +39,7 @@ public class UserDao implements UserRepository<User> {
         }
         catch (Exception e){
             logger.error("Error reading user from db");
-            return null;
+            throw new HibernateException("Failed reading user", e);
         }
     }
 
@@ -59,7 +57,7 @@ public class UserDao implements UserRepository<User> {
         }
         catch (Exception e){
             logger.error("Error updating user to db");
-            return null;
+            throw new HibernateException("Failed updating user", e);
         }
     }
 
@@ -79,6 +77,7 @@ public class UserDao implements UserRepository<User> {
         }
         catch (Exception e){
             logger.error("Error deleting user in db");
+            throw new HibernateException("Failed deleting user", e);
         }
     }
 
