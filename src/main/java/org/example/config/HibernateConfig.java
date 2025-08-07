@@ -8,9 +8,10 @@ import org.slf4j.LoggerFactory;
 
 public class HibernateConfig {
     private static final Logger logger = LoggerFactory.getLogger(HibernateConfig.class);
-    private static SessionFactory sessionFactory;
+    private static final HibernateConfig INSTANCE = new HibernateConfig();
+    private final SessionFactory sessionFactory;
 
-    public static SessionFactory getSessionFactory() {
+    private HibernateConfig(){
         try{
             Configuration configuration = new Configuration()
                     .configure()
@@ -24,12 +25,15 @@ public class HibernateConfig {
             logger.error("Initial SessionFactory creation failed: " + ex);
             throw new ExceptionInInitializerError(ex);
         }
-        return sessionFactory;
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return INSTANCE.sessionFactory;
     }
 
     public static void shutdown() {
-        if (sessionFactory != null) {
-            sessionFactory.close();
+        if (INSTANCE.sessionFactory != null) {
+            INSTANCE.sessionFactory.close();
             logger.info("Hibernate SessionFactory closed successfully");
         }
     }
