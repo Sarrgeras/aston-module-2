@@ -12,7 +12,7 @@ public class UserController {
     private final UserService userService = new UserService();
     private final Scanner scanner = new Scanner(System.in);
 
-    public void start() throws Exception {
+    public void start(){
         while (true) {
             printMenu();
             int choice = scanner.nextInt();
@@ -39,7 +39,7 @@ public class UserController {
         System.out.println("0. выход");
     }
 
-    private void createUser() throws Exception {
+    private void createUser(){
         try {
             logger.info("Starting user creation process");
             System.out.print("Введите имя: ");
@@ -53,12 +53,12 @@ public class UserController {
         }
         catch (Exception e){
             logger.error("Error creating user", e);
-            throw new Exception("Failed creating user " + e);
+            System.out.println("Failed creating user " + e.getMessage());
 
         }
     }
 
-    private void getUserById() throws Exception {
+    private void getUserById(){
         try{
             logger.info("Starting user getting process");
             System.out.print("введите id: ");
@@ -69,11 +69,11 @@ public class UserController {
         }
         catch (Exception e){
             logger.error("Error getting user", e);
-            throw new Exception("Failed getting user " + e);
+            System.out.println("Failed getting user " + e.getMessage());
         }
     }
 
-    private void updateUser() throws Exception {
+    private void updateUser(){
         try{
             logger.info("Starting user updating process");
             System.out.print("введите id: ");
@@ -97,11 +97,11 @@ public class UserController {
         }
         catch (Exception e){
             logger.error("Error updating user", e);
-            throw new Exception("Failed updating user " + e);
+            System.out.println("Failed updating user " + e.getMessage());
         }
     }
 
-    private void deleteUser() throws Exception {
+    private void deleteUser(){
         try{
             logger.info("Starting user deleting process");
             System.out.print("введите id: ");
@@ -110,7 +110,7 @@ public class UserController {
             logger.info("Deleted user with id: {}", id);
         }catch (Exception e){
             logger.error("Error deleting user", e);
-            throw new Exception("Failed deleting user " + e);
+            System.out.println("Failed deleting user " + e.getMessage());
         }
     }
 }
