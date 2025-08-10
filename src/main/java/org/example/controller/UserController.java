@@ -9,8 +9,12 @@ import java.util.Scanner;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private final UserService userService = new UserService();
+    private final UserService userService;
     private final Scanner scanner = new Scanner(System.in);
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
     public void start(){
         while (true) {

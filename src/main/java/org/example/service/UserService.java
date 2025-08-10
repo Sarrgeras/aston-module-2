@@ -7,7 +7,11 @@ import org.example.repository.dao.UserDao;
 import java.time.LocalDateTime;
 
 public class UserService {
-    private final UserDao userDao = new UserDao();
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public User createUser(String name, String email){
         User user = User.builder()
