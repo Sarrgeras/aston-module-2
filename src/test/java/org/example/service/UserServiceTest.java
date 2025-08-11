@@ -1,7 +1,9 @@
 package org.example.service;
 
+import org.example.config.HibernateConfig;
 import org.example.model.User;
 import org.example.repository.dao.UserDao;
+import org.hibernate.HibernateException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +52,17 @@ public class UserServiceTest {
     }
 
     @Test
+    void createUser_Exception() {
+        when(userDao.create(any(User.class))).thenThrow(new HibernateException("Error when create User"));
+
+        HibernateException ex = Assertions.assertThrows(HibernateException.class,
+                () -> userService.createUser("Vlad", "mlvlad@mail.ru"));
+
+        assertEquals("Error when create User", ex.getMessage());
+        verify(userDao).create(any(User.class));
+    }
+
+    @Test
     void getUserById(){
         Long id = 1L;
 
@@ -61,6 +74,20 @@ public class UserServiceTest {
         assertEquals(id, readUser.getId(), "Несовпадение в id");
         assertEquals("Vlad", readUser.getName(), "Несовпадение в именах");
         assertEquals(user.getEmail(), readUser.getEmail(), "Несовпадение в именах почты");
+
+        Mockito.verify(userDao).read(id);
+    }
+
+    @Test
+    void getUserById_Exception(){
+        Long id = 1L;
+
+        Mockito.when(userDao.read(id)).thenThrow(new HibernateException("Error when get User by id"));
+
+        HibernateException ex = Assertions.assertThrows(HibernateException.class,
+                () -> userService.getUserById(id));
+
+        assertEquals("Error when get User by id", ex.getMessage());
 
         Mockito.verify(userDao).read(id);
     }
@@ -84,12 +111,45 @@ public class UserServiceTest {
     }
 
     @Test
+    void updateUser_Exception(){
+
+        User newUser = User.builder()
+                .name("NewName")
+                .email("NewMail@mail.ru")
+                .build();
+
+        Mockito.when(userDao.update(any(User.class))).thenThrow(new HibernateException("Error when update User"));
+
+        HibernateException ex = Assertions.assertThrows(HibernateException.class,
+                () -> userService.updateUser(newUser));
+
+        assertEquals("Error when update User", ex.getMessage());
+
+        Mockito.verify(userDao).update(any(User.class));
+    }
+
+
+    @Test
     void deleteUser(){
         Long id = 1L;
 
         doNothing().when(userDao).delete(id);
 
         userService.deleteUser(id);
+
+        verify(userDao, times(1)).delete(id);
+    }
+
+    @Test
+    void deleteUser_Exception(){
+        Long id = 1L;
+
+        doThrow(new HibernateException("Error when delete user")).when(userDao).delete(id);
+
+        HibernateException ex = Assertions.assertThrows(HibernateException.class,
+                () -> userService.deleteUser(id));
+
+        assertEquals("Error when delete user", ex.getMessage());
 
         verify(userDao, times(1)).delete(id);
     }

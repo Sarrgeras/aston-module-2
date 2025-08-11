@@ -59,6 +59,20 @@ class UserDaoTest {
         }
     }
 
+    private User doTestUser() {
+        try (var session = HibernateConfig.getSessionFactory().openSession()) {
+            var transaction = session.beginTransaction();
+            User u = User.builder()
+                    .name("Vlad")
+                    .email("mlvlad@mail.ru")
+                    .created_at(LocalDateTime.now())
+                    .build();
+            session.persist(u);
+            transaction.commit();
+            return u;
+        }
+    }
+
     @Test
     @DisplayName("Создание пользователя в БД")
     void createUser() {
@@ -72,7 +86,7 @@ class UserDaoTest {
     @Test
     @DisplayName("Чтение пользователя из БД")
     void getUserById() {
-        User savedUser = userDao.create(user);
+        User savedUser = doTestUser();
 
         User foundUser = userDao.read(savedUser.getId());
 
@@ -84,7 +98,7 @@ class UserDaoTest {
     @Test
     @DisplayName("Обнорвление пользователя в БД")
     void updateUser(){
-        User savedUser = userDao.create(user);
+        User savedUser = doTestUser();
 
         savedUser.setName("NewName");
         savedUser.setEmail("NewMail@mail.ru");
@@ -102,7 +116,7 @@ class UserDaoTest {
     @Test
     @DisplayName("Удаление пользователя в БД")
     void deleteUser(){
-        User savedUser = userDao.create(user);
+        User savedUser = doTestUser();
         Long id = savedUser.getId();
 
         userDao.delete(id);
